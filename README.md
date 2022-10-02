@@ -6,9 +6,7 @@
 <!-- badges: start -->
 
 [![GitHub Actions pkgdown
-workflow](https://github.com/uf-repro/writing-R-packages/workflows/pkgdown/badge.svg)](https://github.com/uf-repro/writing-R-packages/actions?query=workflow%3Apkgdown)
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4542545.svg)](https://doi.org/10.5281/zenodo.4542545)
+workflow](https://github.com/ha0ye/writing.R.packages/workflows/pkgdown/badge.svg)](https://github.com/ha0ye/writing.R.packages/actions?query=workflow%3Apkgdown)
 
 <!-- badges: end -->
 
@@ -17,9 +15,9 @@ workflow](https://github.com/uf-repro/writing-R-packages/workflows/pkgdown/badge
 R packages are a powerful way to share code and data across your
 individual projects, with colleagues, or even with the broader
 scientific community. They can also form the basis for a Research
-Compendium to share data analysis work reproducibly. This workshop will
-introduce the basics of creating custom R packages for personal use and
-for sharing!
+Compendium to share data analysis work reproducibly. This workshopand
+demo will introduce the basics of creating custom R packages for
+personal use and for sharing!
 
 ## Learning Outcomes
 
