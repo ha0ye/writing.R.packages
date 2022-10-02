@@ -1,0 +1,428 @@
+---
+title: "`r desc::desc_get('Title', '..')`"
+author: "Hao Ye"
+institute: "Health Science Center Libraries, University of Florida"
+date: "(updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    seal: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#09274B",
+  base_font_size = "32px", 
+  header_h1_font_size = "2.0rem",
+  header_h2_font_size = "1.5rem",
+  header_h3_font_size = "1.25rem", 
+  header_background_content_padding_top = "2rem", 
+  header_font_google = google_font("Lato"),
+  text_font_google   = google_font("Montserrat", "300", "300i", "500"),
+  code_font_google   = google_font("Source Code Pro", "300", "500"), 
+  extra_css = list("p" = list("margin-block-start" = "0.5em", 
+                              "margin-block-end" = "0.5em"), 
+                   "ul" = list("margin-block-start" = "0.5em", 
+                              "margin-block-end" = "0.5em"), 
+                   "li" = list("margin-block-start" = "0.5em", 
+                              "margin-block-end" = "0.5em"), 
+                   "pre" = list("margin-top" = "0.5em", 
+                              "margin-bottom" = "0.5em"), 
+                   ".small" = list("font-size" = "80%"), 
+                   ".tiny" = list("font-size" = "50%")), 
+  link_color = "#339944"
+)
+```
+class: inverse, center, middle
+
+# `r desc::desc_get('Title', '..')`
+### `r rmarkdown::metadata$author`
+### `r rmarkdown::metadata$institute`
+### (updated: `r Sys.Date()`)
+
+---
+# Motivations
+
+R packages are the primary means of bundling R code. Packages have many use cases, including:
+
+* re-using code or data across projects
+* writing open source software
+* creating reproducible analyses
+
+---
+# Learning Outcomes
+
+By the end of the workshop, participants will be able to:
+
+`r gsub("\n ", "\n", desc::desc_get("learningOutcomes"))`
+
+---
+class: inverse, center, middle
+
+# Creating R Packages
+
+---
+# Setup
+
+Before getting started, there are some tools to install to make creating packages easier.
+
+```{r, eval = FALSE}
+install.packages(c("devtools", 
+                   "usethis"
+                   "roxygen2", 
+                   "knitr"))
+```
+
+--
+I recommend using **`RStudio`** as a development environment.
+
+---
+# Creating a new R package
+
+```{r, eval = FALSE}
+devtools::create("myDemoPkg")
+```
+
+* package names have to start with a letter and can only contain letters, numbers, and periods.
+
+<pre class = "hljs remark-code">
+myDemoPkg
+├── .gitignore
+├── .Rbuildignore
+├── DESCRIPTION
+├── myDemoPkg.Rproj
+├── NAMESPACE
+└── R/
+</pre>
+
+---
+# What are these files?
+
+* `.gitignore` tells git to NOT track certain files
+* `.Rbuildignore` tells R to NOT include certain files when building the package
+* `DESCRIPTION` contains basic metadata
+* `myDemoPkg.Rproj` is the RStudio project
+* `NAMESPACE` lists the objects to load with the package
+* `R/` contains the R code
+
+---
+# Building the Package
+
+* R Console
+  ```{r, eval = FALSE}
+devtools::install()
+```
+
+.center[OR]
+
+* RStudio Build Pane
+
+```{r, echo = FALSE, out.width = "70%"}
+#| fig.alt = "A cropped screenshot of the 'Build' Pane in the RStudio interface, showing a panel with tabs for 'Plots', 'Packages', 'Help, 'Build', and 'Viewer' on the left and buttons with the minimize and maximize icons on the right. The 'Build' tab is selected, showing 3 additional buttons at the top of the tab: 'Install and Restart' (with a hammer icon), 'Check' (with a checklist icon), and 'More' (with a gear icon and an arrow indicating a pulldown menu). There is a magenta oval around the 'Install and Restart' button."
+knitr::include_graphics("rstudio_build.png", dpi = 200)
+```
+
+---
+class: middle, center
+
+# Demo
+
+---
+# Fully Operational!
+
+* Next Steps:
+  - syncing to GitHub
+  - adding DESCRIPTION info
+  - adding data and code
+  - adding documentation
+  
+---
+class: inverse, middle, center
+
+# Syncing to GitHub
+
+---
+# Why GitHub?
+
+* note: other cloud services exist (e.g. GitLab) -- we restrict ourself to GitHub in this course
+* Cloud-based backup of your new package
+  - private repos are only visible to whom you give access to
+* Supports installation from R
+  ```{r, eval = FALSE}
+remotes::install_github("{username}/{repo}")
+# remotes::install_github("ha0ye/myDemoPkg")
+```
+  
+---
+# Setup (local)
+
+* Install Git and register a GitHub account - https://happygitwithr.com/install-intro.html
+
+* Establish a Git repo for the project and make an initial commit
+  ```{r, eval = FALSE}
+usethis::use_git()
+```
+
+---
+# Setup (GitHub, via `usethis`)
+
+* Using a personal access token (PAT) that has permissions to create repos
+  ```{r, eval = FALSE}
+usethis::use_github()
+```
+  (see https://usethis.r-lib.org/reference/github-token.html for more info on tokens)
+
+.center[OR]
+
+---
+# Setup (GitHub, manual)
+
+* create a new repository
+  - ideally same name as your package folder
+  - choose public or private
+  - SKIP initialization
+
+* RStudio, click "New Branch" on the "Git"Pane
+
+```{r, echo = FALSE, out.width = "70%"}
+#| fig.alt = "A cropped screenshot of the 'Git' Pane in the RStudio interface, showing a panel with tabs for 'Files', 'Connections', 'Git', and 'Tutorial'. The 'Git' tab is selected, showing another row of buttons, including a button with an icon of a white diamond adjoined to 2 purple rectangles by straight lines. This button is centered in a magenta oval."
+knitr::include_graphics("rstudio_new-branch.png", dpi = 200)
+```
+
+---
+# Setup (GitHub, manual)
+
+* Click "Add Remote"
+  - use `origin` for the "Remote Name"
+  - copy-paste URL from GitHub (shown after creating new repo) for "Remote URL"
+
+```{r, echo = FALSE, out.width = "70%"}
+#| fig.alt = "A cropped screenshot of the 'Add Remote' dialog box in the RStudio interface, showing text boxes labeled 'Remote Name' and 'Remote URL', and buttons for 'Add' and 'Cancel'. The 'Remote Name' text box is filled with 'origin' and the 'Remote URL' text box is filled with 'git@github.com:ha0ye/myDemoPkg.git'"
+knitr::include_graphics("rstudio_add-remote.png", dpi = 200)
+```
+
+---
+# Setup (GitHub, manual)
+
+* Choose the same "Branch Name".  
+(Select "Overwrite" at the warning about a local branch already existing.)
+```{r, echo = FALSE, out.width = "70%"}
+#| fig.alt = "A cropped screenshot of the 'Git' Pane in the RStudio interface, showing a panel with tabs for 'Files', 'Connections', 'Git', and 'Tutorial'. The 'Git' tab is selected, showing another row of buttons, including a text label 'Main' with a pulldown menu icon. The screenshot also contains a dialog box, labeled 'New Branch', with a textbox 'Branch Name' also containing 'Main', a selection menu labeled 'Remote', a button to 'Add Remote...', a checked check box labeled 'Sync box with remote', and two buttons labeled 'Create' and 'Cancel'."
+knitr::include_graphics("rstudio_branch-name.png", dpi = 200)
+```
+
+---
+class: middle, center
+
+# Demo
+
+---
+# Workflow
+
+* work on the package
+* commit the changes
+* push to GitHub
+
+---
+class: inverse, middle, center
+
+# Updating DESCRIPTION
+
+---
+# Parts of a DESCRIPTION
+
+* package name
+* 1 sentence title
+* version number
+* package authors
+* 1 paragraph description
+* license
+* dependencies
+
+---
+# Editing DESCRIPTION
+
+* plaintext file
+* you only need to fill out most fields once
+* a license determines how you allow other people to use it
+  - usethis has defaults built-in:
+  ```{r, eval = FALSE}
+usethis::use_mit_license()  
+```
+  - see also https://choosealicense.com/
+
+---
+# Adding Dependencies
+
+* Any packages that you use code from, other than the `base` package, need to be listed as dependencies.
+* Functions from those other packages need to be referred to by `{pkg}::{fun}`.
+
+* The `use_package` function will add a package to the dependencies in `DESCRIPTION`.
+```{r, eval = FALSE}
+usethis::use_package("utils")
+```
+
+---
+class: inverse, middle, center
+
+# Data and Code
+
+---
+# Code
+
+* Create functions in files within the `R/` folder.
+
+```{r, eval = FALSE}
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Exporting functions
+
+* `NAMESPACE` needs to include the names of objects to be loaded alongside the package.
+* Rather than modify the `NAMESPACE` file directly, it is preferable to use **`devtools`** and **`roxygen2`** to create `NAMESPACE` for us.
+* We add specially formatted comments around our code, and then call `devtools::document()` to generate the documentation files.
+
+---
+# Updating NAMESPACE
+
+* Adding `#' @export` right before an object will include it in `NAMESPACE`:
+```{r, eval = FALSE}
+#' @export
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Adding datasets
+
+* Use `usethis::use_data()` to export a dataset to a file and add that file to the package:
+```{r, eval = FALSE}
+dat <- data.frame(x = 1:3, y = 5:7)
+usethis::use_data(dat) # no quotes
+```
+
+---
+class: inverse, middle, center
+
+# Documenting Code
+
+---
+# roxygen2
+
+* R expects documentation to be written in a specific format, `.rd`, and stored in the `man/` folder
+  - this is a pain.
+--
+
+* `roxygen2` adopts the idea of `doxygen` for R:
+  - code and documentation appear together (specific comments get turned into docs)
+  - easier to maintain consistency
+
+---
+# Example
+
+```{r, eval = FALSE}
+#' Get the column names of a data.frame
+#' @param df A data.frame
+#' @return a character vector
+#' @export
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Data
+
+* Datasets can be documented, usually within the `data.R` file:
+```{r, eval = FALSE}
+#' Example data.frame
+#'
+#' @format A data frame with 3 rows and 2 variables:
+#' \describe{
+#'   \item{x}{some numbers}
+#'   \item{y}{some other numbers}
+#' }
+"dat"
+```
+
+---
+class: inverse, middle, center
+
+# Extras
+
+---
+# Some other useful add-ons
+
+* writing tests for your functions?  
+  check out [`testthat`](https://testthat.r-lib.org/)
+* want a nice website for your package?  
+  check out [`pkgdown`](https://testthat.r-lib.org/)
+* want tests and the pkgdown website to run automatically on github?
+  check out [github actions](https://github.com/r-lib/actions/tree/main/examples)
+```{r, eval = FALSE}
+usethis::use_github_action("check-release")
+```
+
+---
+class: inverse, middle, center
+
+# Research Compendia
+
+---
+# Research Compendia
+
+### Q: How do you share a data analysis reproducibly?
+--
+
+### A: Turn it into an R package!
+
+* write functions to do analysis
+* include data, or code to retrieve data
+* write-up workflow as a package vignette
+  - see https://r-pkgs.org/vignettes.html
+
+---
+# Benefits
+
+* Your project follows the common structure of an R package.
+  - dependencies have to be listed
+  - functions preferred over scripts
+  - tests are more naturally created
+* example - https://github.com/ha0ye/portalDS
+
+---
+class: inverse, middle, center
+
+# Summary
+
+---
+# Summary
+
+* even simple packages can be handy
+  - shared code for your lab
+  - custom ggplot themes for yourself
+* structuring your work in packages promotes re-use and reproducibility
+
+---
+# Thanks
+
+* Let me know what content you'd like to see
+* Contact me for additional questions or consultation requests!
+* Check back in on the libguide for more modules and contact info:
+  - https://guides.uflib.ufl.edu/reproducibility
