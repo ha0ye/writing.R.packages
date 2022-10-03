@@ -1,7 +1,6 @@
 ---
 title: "`r desc::desc_get('Title', '..')`"
 author: "Hao Ye"
-institute: "Health Science Center Libraries, University of Florida"
 date: "(updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
@@ -19,8 +18,7 @@ options(htmltools.dir.version = FALSE)
 
 ```{r xaringan-themer, include=FALSE, warning=FALSE}
 library(xaringanthemer)
-style_mono_accent(
-  base_color = "#09274B",
+style_solarized_light(
   base_font_size = "32px", 
   header_h1_font_size = "2.0rem",
   header_h2_font_size = "1.5rem",
@@ -38,7 +36,8 @@ style_mono_accent(
                    "pre" = list("margin-top" = "0.5em", 
                               "margin-bottom" = "0.5em"), 
                    ".small" = list("font-size" = "80%"), 
-                   ".tiny" = list("font-size" = "50%")), 
+                   ".tiny" = list("font-size" = "50%"), 
+                   ".vmiddle" = list("transform" = "translateY(-100%)")), 
   link_color = "#339944"
 )
 ```
@@ -49,6 +48,17 @@ class: inverse, center, middle
 ### `r rmarkdown::metadata$institute`
 ### (updated: `r Sys.Date()`)
 
+---
+# Setup
+
+Before getting started, there are some tools to install to make creating packages easier.
+
+```{r, eval = FALSE}
+install.packages(c("devtools", 
+                   "usethis"
+                   "roxygen2", 
+                   "knitr"))
+```
 ---
 # Motivations
 
@@ -118,7 +128,7 @@ myDemoPkg
 # Building the Package
 
 * R Console
-  ```{r, eval = FALSE}
+```{r, eval = FALSE}
 devtools::install()
 ```
 
@@ -140,11 +150,140 @@ class: middle, center
 # Fully Operational!
 
 * Next Steps:
-  - syncing to GitHub
   - adding DESCRIPTION info
   - adding data and code
   - adding documentation
-  
+  - syncing to GitHub
+
+---
+class: inverse, middle, center
+
+# Updating DESCRIPTION
+
+---
+# Parts of a DESCRIPTION
+
+* package name
+* 1 sentence title
+* version number
+* package authors
+* 1 paragraph description
+* license
+* dependencies
+
+---
+# Editing DESCRIPTION
+
+* plaintext file
+* you only need to fill out most fields once
+* a license determines how you allow other people to use it
+  - usethis has defaults built-in:
+  ```{r, eval = FALSE}
+usethis::use_mit_license()  
+```
+  - see also https://choosealicense.com/
+
+---
+# Adding Dependencies
+
+* Any packages that you use code from, other than the `base` package, need to be listed as dependencies.
+* Functions from those other packages need to be referred to by `{pkg}::{fun}`.
+
+* The `use_package` function will add a package to the dependencies in `DESCRIPTION`.
+```{r, eval = FALSE}
+usethis::use_package("utils")
+```
+
+---
+class: inverse, middle, center
+
+# Data and Code
+
+---
+# Code
+
+* Create functions in files within the `R/` folder.
+
+```{r, eval = FALSE}
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Exporting functions
+
+* The `NAMESPACE` lists what objects to load with the package.
+* Rather than modify the `NAMESPACE` file directly, it is preferable to use **`devtools`** and **`roxygen2`** to create `NAMESPACE` for us.
+* We add specially formatted comments around our code, and then call `devtools::document()` to generate the documentation files.
+
+---
+# Updating NAMESPACE
+
+* Adding `#' @export` right before an object will include it in `NAMESPACE`:
+```{r, eval = FALSE}
+#' @export
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Adding datasets
+
+* Use `usethis::use_data()` to export a dataset to a file and add that file to the package:
+```{r, eval = FALSE}
+dat <- data.frame(x = 1:3, y = 5:7)
+usethis::use_data(dat) # no quotes
+```
+
+---
+class: inverse, middle, center
+
+# Documenting Code
+
+---
+# roxygen2
+
+* R expects documentation to be written in a specific format, `.rd`, and stored in the `man/` folder
+  - this is a pain.
+--
+
+* `roxygen2` adopts the idea of `doxygen` for R:
+  - code and documentation appear together (specific comments get turned into docs)
+  - easier to maintain consistency
+
+---
+# Example
+
+```{r, eval = FALSE}
+#' Get the column names of a data.frame
+#' @param df A data.frame
+#' @return a character vector
+#' @export
+f <- function(df)
+{
+  names(df)
+}
+```
+
+---
+# Data
+
+* Datasets can be documented, usually within the `data.R` file:
+```{r, eval = FALSE}
+#' Example data.frame
+#'
+#' @format A data frame with 3 rows and 2 variables:
+#' \describe{
+#'   \item{x}{some numbers}
+#'   \item{y}{some other numbers}
+#' }
+"dat"
+```
+
 ---
 class: inverse, middle, center
 
@@ -235,135 +374,6 @@ class: middle, center
 ---
 class: inverse, middle, center
 
-# Updating DESCRIPTION
-
----
-# Parts of a DESCRIPTION
-
-* package name
-* 1 sentence title
-* version number
-* package authors
-* 1 paragraph description
-* license
-* dependencies
-
----
-# Editing DESCRIPTION
-
-* plaintext file
-* you only need to fill out most fields once
-* a license determines how you allow other people to use it
-  - usethis has defaults built-in:
-  ```{r, eval = FALSE}
-usethis::use_mit_license()  
-```
-  - see also https://choosealicense.com/
-
----
-# Adding Dependencies
-
-* Any packages that you use code from, other than the `base` package, need to be listed as dependencies.
-* Functions from those other packages need to be referred to by `{pkg}::{fun}`.
-
-* The `use_package` function will add a package to the dependencies in `DESCRIPTION`.
-```{r, eval = FALSE}
-usethis::use_package("utils")
-```
-
----
-class: inverse, middle, center
-
-# Data and Code
-
----
-# Code
-
-* Create functions in files within the `R/` folder.
-
-```{r, eval = FALSE}
-f <- function(df)
-{
-  names(df)
-}
-```
-
----
-# Exporting functions
-
-* `NAMESPACE` needs to include the names of objects to be loaded alongside the package.
-* Rather than modify the `NAMESPACE` file directly, it is preferable to use **`devtools`** and **`roxygen2`** to create `NAMESPACE` for us.
-* We add specially formatted comments around our code, and then call `devtools::document()` to generate the documentation files.
-
----
-# Updating NAMESPACE
-
-* Adding `#' @export` right before an object will include it in `NAMESPACE`:
-```{r, eval = FALSE}
-#' @export
-f <- function(df)
-{
-  names(df)
-}
-```
-
----
-# Adding datasets
-
-* Use `usethis::use_data()` to export a dataset to a file and add that file to the package:
-```{r, eval = FALSE}
-dat <- data.frame(x = 1:3, y = 5:7)
-usethis::use_data(dat) # no quotes
-```
-
----
-class: inverse, middle, center
-
-# Documenting Code
-
----
-# roxygen2
-
-* R expects documentation to be written in a specific format, `.rd`, and stored in the `man/` folder
-  - this is a pain.
---
-
-* `roxygen2` adopts the idea of `doxygen` for R:
-  - code and documentation appear together (specific comments get turned into docs)
-  - easier to maintain consistency
-
----
-# Example
-
-```{r, eval = FALSE}
-#' Get the column names of a data.frame
-#' @param df A data.frame
-#' @return a character vector
-#' @export
-f <- function(df)
-{
-  names(df)
-}
-```
-
----
-# Data
-
-* Datasets can be documented, usually within the `data.R` file:
-```{r, eval = FALSE}
-#' Example data.frame
-#'
-#' @format A data frame with 3 rows and 2 variables:
-#' \describe{
-#'   \item{x}{some numbers}
-#'   \item{y}{some other numbers}
-#' }
-"dat"
-```
-
----
-class: inverse, middle, center
-
 # Extras
 
 ---
@@ -421,8 +431,3 @@ class: inverse, middle, center
 
 ---
 # Thanks
-
-* Let me know what content you'd like to see
-* Contact me for additional questions or consultation requests!
-* Check back in on the libguide for more modules and contact info:
-  - https://guides.uflib.ufl.edu/reproducibility
